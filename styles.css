@@ -18,7 +18,7 @@ body {
     background-color: #111;
     font-family: 'VT323', monospace;
     color: var(--matrix-green);
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,6 +34,10 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
     overflow: hidden;
+    height: auto;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .terminal-header {
@@ -78,9 +82,8 @@ body {
 
 .terminal-content {
     padding: 20px;
-    height: calc(100vh - 100px);
-    max-height: 800px;
     overflow-y: auto;
+    flex: 1;
     position: relative;
 }
 
@@ -291,16 +294,44 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+    
     .plugins-container {
         grid-template-columns: 1fr;
     }
     
     .terminal {
-        height: 100%;
+        height: auto;
+        min-height: 85vh;
+        max-height: none;
+        margin: 10px 0;
     }
     
     .terminal-content {
-        height: auto;
-        max-height: none;
+        padding: 15px;
+    }
+    
+    .plugin-name {
+        font-size: 18px;
+    }
+    
+    .plugin-version {
+        font-size: 12px;
+    }
+    
+    .intro-text p {
+        font-size: 16px;
+    }
+    
+    .plugin-description {
+        font-size: 14px;
+    }
+    
+    .download-btn {
+        padding: 6px 12px;
+        font-size: 14px;
     }
 } 

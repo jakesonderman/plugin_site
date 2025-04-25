@@ -11,3 +11,5 @@ node_modules/
 # Optional: Add specific files you never want tracked
 # downloads/debug-only-*.pkg
 # img/temp-*.png 
+# Local Netlify folder
+.netlify

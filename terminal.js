@@ -9,7 +9,24 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         loadPlugins();
     }, 2500);
+    
+    // Add touch support for mobile
+    addMobileTouchSupport();
 });
+
+// Function to add mobile touch support
+function addMobileTouchSupport() {
+    // Convert mouseover to touch events for glitch effects
+    document.addEventListener('touchstart', function() {
+        // This empty function just enables touch behavior
+    }, false);
+    
+    // Ensure scrolling works properly on touch devices
+    const terminalContent = document.querySelector('.terminal-content');
+    if (terminalContent) {
+        terminalContent.style.webkitOverflowScrolling = 'touch';
+    }
+}
 
 // Function to create the matrix digital rain effect
 function createMatrixBackground() {
@@ -18,19 +35,27 @@ function createMatrixBackground() {
     document.body.appendChild(matrixBg);
     
     const ctx = matrixBg.getContext('2d');
-    matrixBg.width = window.innerWidth;
-    matrixBg.height = window.innerHeight;
+    
+    // Set initial canvas size
+    resizeCanvas();
     
     // Matrix characters
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%"\'#&_(),.;:?!\\|{}<>[]^~';
-    const fontSize = 14;
-    const columns = matrixBg.width / fontSize;
+    const fontSize = isMobile() ? 10 : 14; // Smaller font size on mobile
+    let columns = Math.floor(matrixBg.width / fontSize);
     
     // Array to track the y position of each column
-    const drops = [];
-    for (let i = 0; i < columns; i++) {
-        drops[i] = 1;
+    let drops = [];
+    
+    function initDrops() {
+        drops = [];
+        columns = Math.floor(matrixBg.width / fontSize);
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
     }
+    
+    initDrops();
     
     // Drawing the characters
     function draw() {
@@ -60,12 +85,37 @@ function createMatrixBackground() {
     }
     
     // Update animation
-    setInterval(draw, 35);
+    let animationId;
+    function startAnimation() {
+        if (animationId) cancelAnimationFrame(animationId);
+        function animate() {
+            draw();
+            animationId = requestAnimationFrame(animate);
+        }
+        animate();
+    }
     
-    // Resize handler
-    window.addEventListener('resize', () => {
+    startAnimation();
+    
+    // Function to check if device is mobile
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+    
+    // Function to resize canvas
+    function resizeCanvas() {
         matrixBg.width = window.innerWidth;
         matrixBg.height = window.innerHeight;
+    }
+    
+    // Resize handler with debounce
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            resizeCanvas();
+            initDrops();
+        }, 200);
     });
 }
 
@@ -134,11 +184,16 @@ function loadPlugins() {
             // Add plugin element to container with delay
             pluginsContainer.appendChild(pluginElement);
             
-            // Add glitch effect on hover
+            // Add glitch effect on hover/touch
             const pluginItem = pluginsContainer.lastElementChild;
             pluginItem.addEventListener('mouseover', () => {
                 addGlitchEffect(pluginItem);
             });
+            
+            // Add touch support for mobile
+            pluginItem.addEventListener('touchstart', (e) => {
+                addGlitchEffect(pluginItem);
+            }, false);
         }, index * 200); // Stagger the plugin appearance
     });
 }
