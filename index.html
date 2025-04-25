@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Terminal - Audio Plugins</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-controls">
+                <span class="control"></span>
+                <span class="control"></span>
+                <span class="control"></span>
+            </div>
+            <div class="terminal-title">SONDY PLUGINS v1.0</div>
+        </div>
+        <div class="terminal-content">
+            <div class="intro-text">
+                <span class="cursor">█</span>
+                <p>> INITIALIZING SYSTEM...</p>
+                <p>> ACCESSING AUDIO PLUGIN DATABASE...</p>
+                <p>> ACCESS GRANTED</p>
+                <p>> WELCOME TO THE MATRIX AUDIO PLUGINS TERMINAL</p>
+                <p>> SELECT A PLUGIN FROM THE LIST BELOW:</p>
+            </div>
+            
+            <div class="plugins-container" id="plugins-list">
+                <!-- Plugins will be loaded from plugins.js -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Plugin template -->
+    <template id="plugin-template">
+        <div class="plugin-item">
+            <div class="plugin-header">
+                <h2 class="plugin-name">> PLUGIN_NAME</h2>
+                <span class="plugin-version">v1.0</span>
+            </div>
+            <div class="plugin-content">
+                <div class="plugin-image-container">
+                    <img class="plugin-image" src="" alt="">
+                </div>
+                <div class="plugin-description"></div>
+                <div class="plugin-actions">
+                    <a href="#" class="download-btn">DOWNLOAD .PKG</a>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="plugins.js"></script>
+    <script src="terminal.js"></script>
+</body>
+</html> 
