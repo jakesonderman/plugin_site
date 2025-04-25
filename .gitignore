@@ -1,4 +1,8 @@
 .DS_Store
 node_modules/
 .env
-*.log 
+*.log
+
+# Exclude downloads and images
+downloads/
+img/ 
