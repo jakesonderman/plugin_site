@@ -3,8 +3,11 @@ node_modules/
 .env
 *.log
 
-# Exclude downloads and images but keep directory structure
-downloads/*
+# We'll track all media files with Git LFS now
+# Keep the directory structure markers
 !downloads/.gitkeep
-img/*
-!img/.gitkeep 
+!img/.gitkeep
+
+# Optional: Add specific files you never want tracked
+# downloads/debug-only-*.pkg
+# img/temp-*.png 

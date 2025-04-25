@@ -1,0 +1,13 @@
+This is a placeholder file for the img directory.
+
+For actual implementation, you would need to add your audio plugin images here with filenames matching those referenced in plugins.js.
+
+Suggested images to create or acquire:
+- matrix-eq.jpg
+- digital-rain.jpg
+- red-pill.jpg
+- sentinel.jpg
+- nebuchadnezzar.jpg
+- architect.jpg
+
+For the best look, use images with dimensions of at least 600x400 pixels. 

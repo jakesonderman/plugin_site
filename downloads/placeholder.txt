@@ -1,0 +1,11 @@
+This is a placeholder file for the downloads directory.
+
+For actual implementation, you would need to add your audio plugin .pkg installers here with filenames matching those referenced in plugins.js.
+
+Suggested .pkg files to create:
+- MatrixEQ_v1.0.2.pkg
+- DigitalRain_v2.1.0.pkg
+- RedPill_v1.5.3.pkg
+- Sentinel_v3.0.1.pkg
+- Nebuchadnezzar_v2.2.5.pkg
+- Architect_v1.3.7.pkg 

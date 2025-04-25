@@ -4,4 +4,16 @@
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200 
+  status = 200
+
+# Set higher timeout for large file handling
+[build.processing]
+  skip_processing = false
+
+[build.processing.images]
+  compress = true
+
+# Increase timeout for large file uploads
+[build.environment]
+  NODE_VERSION = "16"
+  MAX_UPLOAD_SIZE = "300MB" 
