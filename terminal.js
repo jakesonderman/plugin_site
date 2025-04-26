@@ -162,8 +162,13 @@ function loadPlugins() {
     // Clear loading message if exists
     pluginsContainer.innerHTML = '';
     
+    // Debug: log plugins array
+    console.log('Plugins array:', plugins);
+    console.log('Number of plugins:', plugins.length);
+    
     // Create and append each plugin
     plugins.forEach((plugin, index) => {
+        console.log(`Processing plugin ${index + 1}:`, plugin.name);
         setTimeout(() => {
             const pluginElement = template.content.cloneNode(true);
             
@@ -175,8 +180,11 @@ function loadPlugins() {
             const mediaContainer = pluginElement.querySelector('.plugin-media-container');
             const mediaPath = plugin.media || plugin.image; // Support both media and image properties
             
+            console.log(`Plugin ${plugin.name} media path:`, mediaPath);
+            
             if (mediaPath) {
                 const fileExtension = mediaPath.split('.').pop().toLowerCase();
+                console.log(`File extension for ${plugin.name}:`, fileExtension);
                 
                 if (['mov', 'mp4'].includes(fileExtension)) {
                     // Create video element
@@ -200,6 +208,7 @@ function loadPlugins() {
                     }
                     
                     mediaContainer.appendChild(videoElement);
+                    console.log(`Added video element for ${plugin.name}`);
                     
                     // Start video when it's visible
                     const observer = new IntersectionObserver((entries) => {
@@ -227,6 +236,7 @@ function loadPlugins() {
                     imgElement.alt = plugin.name;
                     
                     mediaContainer.appendChild(imgElement);
+                    console.log(`Added image element for ${plugin.name}`);
                 }
             }
             
@@ -238,6 +248,7 @@ function loadPlugins() {
             
             // Add plugin element to container with delay
             pluginsContainer.appendChild(pluginElement);
+            console.log(`Plugin ${plugin.name} added to DOM`);
             
             // Add glitch effect on hover/touch
             const pluginItem = pluginsContainer.lastElementChild;

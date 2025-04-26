@@ -9,3 +9,4 @@
 # Other large binaries
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.tar.gz filter=lfs diff=lfs merge=lfs -text 
+*.mp4 filter=lfs diff=lfs merge=lfs -text
