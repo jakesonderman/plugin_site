@@ -180,11 +180,12 @@ body {
     gap: 15px;
 }
 
-.plugin-image-container {
+.plugin-media-container {
     width: 100%;
     height: 150px;
     overflow: hidden;
     border: 1px solid var(--matrix-dark-green);
+    position: relative;
 }
 
 .plugin-image {
@@ -195,7 +196,62 @@ body {
     transition: transform 0.3s ease;
 }
 
-.plugin-image:hover {
+.plugin-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(50%) hue-rotate(80deg) saturate(150%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-video {
+    /* Hide controls by default on mobile but allow them to appear on tap */
+    position: relative;
+}
+
+.mobile-video::-webkit-media-controls {
+    opacity: 0.3;
+    transition: opacity 0.3s;
+}
+
+.mobile-video::-webkit-media-controls:hover {
+    opacity: 1;
+}
+
+.video-play-fallback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 255, 0, 0.6);
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+    }
+}
+
+.plugin-image:hover,
+.plugin-video:hover {
     transform: scale(1.05);
 }
 

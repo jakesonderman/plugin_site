@@ -171,9 +171,64 @@ function loadPlugins() {
             pluginElement.querySelector('.plugin-name').textContent = `> ${plugin.name}`;
             pluginElement.querySelector('.plugin-version').textContent = `v${plugin.version}`;
             
-            const imgElement = pluginElement.querySelector('.plugin-image');
-            imgElement.src = plugin.image;
-            imgElement.alt = plugin.name;
+            // Handle media content (image or video)
+            const mediaContainer = pluginElement.querySelector('.plugin-media-container');
+            const mediaPath = plugin.media || plugin.image; // Support both media and image properties
+            
+            if (mediaPath) {
+                const fileExtension = mediaPath.split('.').pop().toLowerCase();
+                
+                if (['mov', 'mp4'].includes(fileExtension)) {
+                    // Create video element
+                    const videoElement = document.createElement('video');
+                    videoElement.classList.add('plugin-video');
+                    videoElement.src = mediaPath;
+                    videoElement.autoplay = true;
+                    videoElement.loop = true;
+                    videoElement.muted = true;
+                    videoElement.playsInline = true;
+                    videoElement.setAttribute('playsinline', ''); // iOS support
+                    
+                    // Add poster attribute as fallback
+                    videoElement.poster = 'img/video-poster.png';
+                    
+                    // Add controls for mobile (hidden by default but can be shown on tap)
+                    if (isMobile()) {
+                        videoElement.controls = true;
+                        // Hide controls by default but show on tap
+                        videoElement.classList.add('mobile-video');
+                    }
+                    
+                    mediaContainer.appendChild(videoElement);
+                    
+                    // Start video when it's visible
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                videoElement.play().catch(e => {
+                                    console.log('Video play error:', e);
+                                    // Fallback - add a play button if autoplay fails
+                                    if (!mediaContainer.querySelector('.video-play-fallback')) {
+                                        addVideoPlayButton(mediaContainer, videoElement);
+                                    }
+                                });
+                            } else {
+                                videoElement.pause();
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    
+                    observer.observe(videoElement);
+                } else {
+                    // Create image element
+                    const imgElement = document.createElement('img');
+                    imgElement.classList.add('plugin-image');
+                    imgElement.src = mediaPath;
+                    imgElement.alt = plugin.name;
+                    
+                    mediaContainer.appendChild(imgElement);
+                }
+            }
             
             pluginElement.querySelector('.plugin-description').textContent = plugin.description;
             
@@ -195,6 +250,19 @@ function loadPlugins() {
                 addGlitchEffect(pluginItem);
             }, false);
         }, index * 200); // Stagger the plugin appearance
+    });
+}
+
+// Function to add a play button if autoplay fails (especially on mobile)
+function addVideoPlayButton(container, videoElement) {
+    const playButton = document.createElement('button');
+    playButton.classList.add('video-play-fallback');
+    playButton.innerHTML = '▶';
+    container.appendChild(playButton);
+    
+    playButton.addEventListener('click', () => {
+        videoElement.play();
+        playButton.style.display = 'none';
     });
 }
 
