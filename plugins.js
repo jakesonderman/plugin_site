@@ -12,9 +12,18 @@ const plugins = [
     {
         name: "Clarity Prism",
         version: "1.0",
-        description: "Multiband detail and transient destroyer plugin..",
-        // You can use either image or media property
-        media: "img/ClarityPrismFrames03.png", // Can be a .png, .jpg, .mp4, or .mov file
+        description: "Multiband detail and transient destroyer plugin. Includes compression, limiting, and saturation controls for achieving perfect clarity in your mixes.",
+        // Using the new PNG sequence animation
+        pngSequence: {
+            baseUrl: "img/",
+            baseFileName: "ClarityPrismFrames",
+            frameCount: 20,
+            startIndex: 0,
+            padLength: 2,
+            fps: 15,
+            extension: "png",
+            loop: true
+        },
         downloadUrl: "downloads/prism-signed.pkg"
     }
     // Add more plugins here

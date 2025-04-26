@@ -390,4 +390,44 @@ body {
         padding: 6px 12px;
         font-size: 14px;
     }
+}
+
+/* PNG Sequence Animation */
+.png-sequence-container {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.png-sequence-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Matrix glitch effect for animation */
+.png-sequence-container:hover {
+    animation: glitch-border 0.2s steps(1) infinite;
+}
+
+@keyframes glitch-border {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    25% {
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+    75% {
+        box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
 } 

@@ -228,6 +228,10 @@ function loadPlugins() {
                     }, { threshold: 0.1 });
                     
                     observer.observe(videoElement);
+                } else if (plugin.pngSequence) {
+                    // Handle PNG sequence animation
+                    createPngSequenceAnimation(mediaContainer, plugin.pngSequence);
+                    console.log(`Added PNG sequence animation for ${plugin.name}`);
                 } else {
                     // Create image element
                     const imgElement = document.createElement('img');
@@ -262,6 +266,87 @@ function loadPlugins() {
             }, false);
         }, index * 200); // Stagger the plugin appearance
     });
+}
+
+// Function to create PNG sequence animation
+function createPngSequenceAnimation(container, sequenceConfig) {
+    // Create container for the animation
+    const animContainer = document.createElement('div');
+    animContainer.classList.add('png-sequence-container');
+    container.appendChild(animContainer);
+    
+    // Create image element for the animation
+    const imgElement = document.createElement('img');
+    imgElement.classList.add('png-sequence-image');
+    animContainer.appendChild(imgElement);
+    
+    // Parse configuration
+    let baseUrl = sequenceConfig.baseUrl || 'img/';
+    let baseFileName = sequenceConfig.baseFileName || '';
+    let frameCount = sequenceConfig.frameCount || 1;
+    let extension = sequenceConfig.extension || 'png';
+    let fps = sequenceConfig.fps || 24;
+    let startIndex = sequenceConfig.startIndex || 0;
+    let padLength = sequenceConfig.padLength || 2;
+    let loop = sequenceConfig.loop !== false; // Default to true
+    
+    // Preload all images
+    const images = [];
+    for (let i = 0; i < frameCount; i++) {
+        const frameIndex = startIndex + i;
+        const paddedIndex = frameIndex.toString().padStart(padLength, '0');
+        const framePath = `${baseUrl}${baseFileName}${paddedIndex}.${extension}`;
+        
+        const img = new Image();
+        img.src = framePath;
+        images.push(img);
+    }
+    
+    // Set initial frame
+    let currentFrame = 0;
+    imgElement.src = images[currentFrame].src;
+    
+    // Animation interval
+    const frameInterval = 1000 / fps;
+    let animationId;
+    
+    // Start animation when it's visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startAnimation();
+            } else {
+                stopAnimation();
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    observer.observe(animContainer);
+    
+    // Animation functions
+    function startAnimation() {
+        if (animationId) return;
+        
+        animationId = setInterval(() => {
+            currentFrame = (currentFrame + 1) % frameCount;
+            imgElement.src = images[currentFrame].src;
+            
+            // If not looping and we've reached the end, stop
+            if (!loop && currentFrame === frameCount - 1) {
+                stopAnimation();
+            }
+        }, frameInterval);
+    }
+    
+    function stopAnimation() {
+        if (animationId) {
+            clearInterval(animationId);
+            animationId = null;
+        }
+    }
+    
+    // Start animation
+    startAnimation();
 }
 
 // Function to add a play button if autoplay fails (especially on mobile)
