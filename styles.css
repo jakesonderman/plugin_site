@@ -401,12 +401,31 @@ body {
     background-color: #000;
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    /* Min-height to ensure container is visible while loading */
+    min-height: 150px;
+    height: 150px; /* Default height that will be adjusted by JS */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.png-sequence-container::before {
+    content: "Loading...";
+    position: absolute;
+    color: var(--matrix-green);
+    font-size: 16px;
+    opacity: 0.5;
+    z-index: 0;
 }
 
 .png-sequence-image {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
     display: block;
+    position: relative;
+    z-index: 1;
+    filter: sepia(50%) hue-rotate(80deg) saturate(150%);
 }
 
 /* Matrix glitch effect for animation */

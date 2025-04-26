@@ -290,63 +290,138 @@ function createPngSequenceAnimation(container, sequenceConfig) {
     let padLength = sequenceConfig.padLength || 2;
     let loop = sequenceConfig.loop !== false; // Default to true
     
-    // Preload all images
-    const images = [];
-    for (let i = 0; i < frameCount; i++) {
-        const frameIndex = startIndex + i;
-        const paddedIndex = frameIndex.toString().padStart(padLength, '0');
-        const framePath = `${baseUrl}${baseFileName}${paddedIndex}.${extension}`;
-        
-        const img = new Image();
-        img.src = framePath;
-        images.push(img);
-    }
+    console.log('PNG Sequence Config:', sequenceConfig);
     
-    // Set initial frame
-    let currentFrame = 0;
-    imgElement.src = images[currentFrame].src;
+    // Debug: log the first frame path
+    const firstFrameIndex = startIndex;
+    const firstFramePadded = firstFrameIndex.toString().padStart(padLength, '0');
+    const firstFramePath = `${baseUrl}${baseFileName}${firstFramePadded}.${extension}`;
+    console.log('First frame path:', firstFramePath);
     
-    // Animation interval
-    const frameInterval = 1000 / fps;
-    let animationId;
+    // Set initial frame immediately to show something
+    imgElement.src = firstFramePath;
+    imgElement.alt = 'Animation frame';
+    imgElement.onerror = function() {
+        console.error('Error loading image:', this.src);
+        // Set a fallback image if the frame doesn't load
+        this.src = 'img/video-poster.png';
+    };
     
-    // Start animation when it's visible
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                startAnimation();
-            } else {
-                stopAnimation();
-            }
+    // Function to check if image exists
+    function imageExists(url) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(false);
+            img.src = url;
         });
-    }, { threshold: 0.1 });
-    
-    observer.observe(animContainer);
-    
-    // Animation functions
-    function startAnimation() {
-        if (animationId) return;
-        
-        animationId = setInterval(() => {
-            currentFrame = (currentFrame + 1) % frameCount;
-            imgElement.src = images[currentFrame].src;
-            
-            // If not looping and we've reached the end, stop
-            if (!loop && currentFrame === frameCount - 1) {
-                stopAnimation();
-            }
-        }, frameInterval);
     }
     
-    function stopAnimation() {
-        if (animationId) {
-            clearInterval(animationId);
-            animationId = null;
+    // Preload all images and start animation only when they're loaded
+    async function preloadImages() {
+        const images = [];
+        let allImagesExist = true;
+        
+        for (let i = 0; i < frameCount; i++) {
+            const frameIndex = startIndex + i;
+            const paddedIndex = frameIndex.toString().padStart(padLength, '0');
+            const framePath = `${baseUrl}${baseFileName}${paddedIndex}.${extension}`;
+            
+            // Check if image exists
+            const exists = await imageExists(framePath);
+            if (!exists) {
+                console.error(`Image does not exist: ${framePath}`);
+                allImagesExist = false;
+            }
+            
+            const img = new Image();
+            img.src = framePath;
+            images.push(img);
+        }
+        
+        if (!allImagesExist) {
+            console.warn('Some frames are missing. Animation might not work properly.');
+        }
+        
+        return images;
+    }
+    
+    // Start sequence animation
+    async function initAnimation() {
+        const images = await preloadImages();
+        
+        if (images.length === 0) {
+            console.error('No valid images found for animation');
+            return;
+        }
+        
+        console.log(`Successfully loaded ${images.length} frames for animation`);
+        
+        // Set height of container to match aspect ratio of first image
+        images[0].onload = function() {
+            const aspectRatio = this.height / this.width;
+            animContainer.style.height = `${animContainer.offsetWidth * aspectRatio}px`;
+        };
+        
+        // Animation interval
+        let currentFrame = 0;
+        const frameInterval = 1000 / fps;
+        let animationId;
+        
+        // Start animation when it's visible
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    startAnimation();
+                } else {
+                    stopAnimation();
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        observer.observe(animContainer);
+        
+        // Animation functions
+        function startAnimation() {
+            if (animationId) return;
+            
+            animationId = setInterval(() => {
+                currentFrame = (currentFrame + 1) % images.length;
+                imgElement.src = images[currentFrame].src;
+                
+                // If not looping and we've reached the end, stop
+                if (!loop && currentFrame === images.length - 1) {
+                    stopAnimation();
+                }
+            }, frameInterval);
+        }
+        
+        function stopAnimation() {
+            if (animationId) {
+                clearInterval(animationId);
+                animationId = null;
+            }
+        }
+        
+        // Start animation immediately if in viewport
+        if (isElementInViewport(animContainer)) {
+            startAnimation();
         }
     }
     
-    // Start animation
-    startAnimation();
+    // Helper function to check if element is in viewport
+    function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+    
+    // Initialize the animation
+    initAnimation();
 }
 
 // Function to add a play button if autoplay fails (especially on mobile)
