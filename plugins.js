@@ -12,9 +12,9 @@ const plugins = [
     {
         name: "Clarity Prism",
         version: "1.0",
-        description: "Multiband detail and transient destroyer plugin. Includes compression, limiting, and saturation controls for achieving perfect clarity in your mixes.",
+        description: "Multiband detail and transient destroyer plugin..",
         // You can use either image or media property
-        media: "mp4/CLARITY_PRISM_ADD.mp4", // Can be a .png, .jpg, .mp4, or .mov file
+        media: "img/ClarityPrismFrames03.png", // Can be a .png, .jpg, .mp4, or .mov file
         downloadUrl: "downloads/prism-signed.pkg"
     }
     // Add more plugins here
